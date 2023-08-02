@@ -15,29 +15,30 @@ use App\Http\Controllers\ResponseController;
 | be assigned to the "web" middleware group. Make something great!
 |
 */
+Route::controller(ResponseController::class)->group(function () {
+    Route::get('/',"index");
+    Route::get('/palindrome/{text}',"isPalindrome");
+    Route::get('/language',"show");
+    Route::get('/language/{id}',"show");
+    Route::post('/language',"store");
+    Route::patch('/language/{idupdate}',"update");
+    Route::delete('/language/{id}',"destroy");
+});
 
-Route::get('/', [ResponseController::class, "index"]);
-Route::get('/palindrome/{text}', [ResponseController::class, "isPalindrome"]);
-Route::get('/language', [ResponseController::class, "show"]);
-Route::get('/language/{id}', [ResponseController::class, "show"]);
-Route::post('/language', [ResponseController::class, "store"]);
-Route::patch('/language/{idupdate}', [ResponseController::class, "update"]);
-Route::delete('/language/{id}', [ResponseController::class, "destroy"]);
-
-Route::get('/getemployee', [Employee::class, "getNameEmployeeStillWork"]);
-Route::get('/getemployeeunreview', [Employee::class, "getEmployeeUnreviewSortbyHireddate"]);
-Route::get('/getemployeediffdate', [Employee::class, "getEmployeeDiffdate"]);
-Route::get('/getemployeeupsalary', [Employee::class, "getEmployeeUpsalary"]);
-Route::get('/saveToTxt', [Employee::class, "saveToTxt"]);
-Route::get('/getTxt/{filename}', [Employee::class, "getTxt"]);
-Route::get('/getinputcity/{city}', [Employee::class, "getInputCity"]);
-
-Route::get('/getorderingarray', [Employee::class, "getOrderArrayAscToDescNoDuplicate"]);
-Route::get('/getcountduplicatevalues', [Employee::class, "getCountduplicatevaluesarray"]);
-Route::post('/getremovevalues', [Employee::class, "getRemovevalues"]);
-Route::get('/getinputplusvalue/{val}', [Employee::class, "getInputplusvalue"]);
-Route::get('/getrandom', [Employee::class, "getrandomstringandNumber"]);
-
+Route::controller(Employee::class)->group(function () {
+    Route::get('/getemployee',"getNameEmployeeStillWork");
+    Route::get('/getemployeeunreview',"getEmployeeUnreviewSortbyHireddate");
+    Route::get('/getemployeediffdate',"getEmployeeDiffdate");
+    Route::get('/getemployeeupsalary',"getEmployeeUpsalary");
+    Route::get('/saveToTxt',"saveToTxt");
+    Route::get('/getTxt/{filename}',"getTxt");
+    Route::get('/getinputcity/{city}',"getInputCity");
+    Route::get('/getorderingarray',"getOrderArrayAscToDescNoDuplicate");
+    Route::get('/getcountduplicatevalues',"getCountduplicatevaluesarray");
+    Route::post('/getremovevalues',"getRemovevalues");
+    Route::get('/getinputplusvalue/{val}',"getInputplusvalue");
+    Route::get('/getrandom',"getrandomstringandNumber");
+});
 
 Route::fallback(function () {
     return response("Method Not Allowed", Response::HTTP_METHOD_NOT_ALLOWED);

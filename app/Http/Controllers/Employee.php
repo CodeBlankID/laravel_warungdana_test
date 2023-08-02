@@ -12,7 +12,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 class Employee extends Controller
 {
 
-    private $arrayCity=["bandung","cimahi","cmbon","jayapura","makasar"];
+    private $arrayCity=["bandung","cimahi","ambon","jayapura","makasar"];
     private $arrayNumber=[9,1,6,4,8,6,6,3,8,2,3,3,4,1,8,2];
 
     //Soal No 2
@@ -138,43 +138,32 @@ class Employee extends Controller
       }
 
      
-      function getRandomString(int $val){
-        $characters = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+      function getRandomString($val){
         $randomString = '';
-        for ($i = 0; $i < $val; $i++) {
-            $index = rand(0, strlen($characters) - 1);
-            $randomString .= $characters[$index];
+        for ($i = 0; $i < 50; $i++) {
+            $index = rand(0, strlen($val) - 1);
+            $randomString .= $val[$index];
         }
         return $randomString;
       }
 
-      function getRandomInt(int $val){
-        $characters = '0123456789';
-        $randomInt = '';
-        for ($i = 0; $i < $val; $i++) {
-            $index = rand(0, strlen($characters) - 1);
-            $randomInt .= $characters[$index];
-        }
-        return $randomInt;
-      }
-
     //Soal no 10
       function getrandomstringandNumber() : JsonResponse {
-        $getstring = $this->getRandomString(50).$this->getRandomInt(50);
-        $getint = $this->getRandomInt(50);
-
-        $shuffled = str_shuffle($getstring);
+        $stringalpha="abcdefghijklmnopqrstuvwxyz";
+        $intalpha="0123456789";
+        $shuffled_string = str_shuffle($this->getRandomString($stringalpha).$this->getRandomString($intalpha));
         $even = 0;
 
-        $data["randomstring"]=  $shuffled;
-        $data["total_character"]=preg_match_all( "( *?[a-zA-Z] *?)", $shuffled );
-        $data["total_character_vowel"]=preg_match_all("/[aeiou]/i",$shuffled,$matches);
-        $data["total_number"]= preg_match_all( "/[0-9]/", $shuffled );
-        foreach (str_split($getint) as $number ) {
+        $data["randomstring"]=  $shuffled_string;
+        $data["total_character"]=preg_match_all( "( *?[a-zA-Z] *?)", $shuffled_string );
+        $data["total_character_vowel"]=preg_match_all("/[aeiou]/i",$shuffled_string,$matches);
+        $data["total_number"]= preg_match_all( "/[0-9]/", $shuffled_string,$resultnumber);
+
+        foreach ($resultnumber[0] as $number ) {
             $number % 2 == 0 ? $even++ :0;
         }
         $data["total_number_even"]=$even;
-        $data+=$this->getOrderChar($shuffled);
+        $data+=$this->getOrderChar($shuffled_string);
        return response()->json( $data, Response::HTTP_OK);
 
       }
@@ -201,12 +190,16 @@ class Employee extends Controller
 
       function getconcatstring($numeric,$string) {
         $data="";
-        for ($i=0; $i <count($numeric) ; $i++) { 
-            $data .=$numeric[$i].$string[$i].",";
+        $getmax=max(count($numeric),count($string));
+       
+        for ($i=0; $i < $getmax ; $i++) { 
+            if (isset($numeric[$i])) {
+                $data .=$numeric[$i].$string[$i].",";
+            }else{
+                $data .=$string[$i].",";
+            }
         }
 
         return $data;
       }
-    
-    
 }
