@@ -141,7 +141,6 @@ class Employee extends Controller
       function getRandomString(int $val){
         $characters = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
         $randomString = '';
-
         for ($i = 0; $i < $val; $i++) {
             $index = rand(0, strlen($characters) - 1);
             $randomString .= $characters[$index];
@@ -152,7 +151,6 @@ class Employee extends Controller
       function getRandomInt(int $val){
         $characters = '0123456789';
         $randomInt = '';
-
         for ($i = 0; $i < $val; $i++) {
             $index = rand(0, strlen($characters) - 1);
             $randomInt .= $characters[$index];
@@ -162,18 +160,52 @@ class Employee extends Controller
 
     //Soal no 10
       function getrandomstringandNumber() : JsonResponse {
-        $getstring = $this->getRandomString(50);
+        $getstring = $this->getRandomString(50).$this->getRandomInt(50);
         $getint = $this->getRandomInt(50);
+
+        $shuffled = str_shuffle($getstring);
         $even = 0;
-        $data["total_character"]=strlen($getstring);
-        $data["total_character_vowel"]=preg_match_all("/[aeiou]/i",$getstring,$matches);
-        $data["total_number"]=strlen($getint);
-        foreach ( str_split($getint) as $number ) {
+
+        $data["randomstring"]=  $shuffled;
+        $data["total_character"]=preg_match_all( "( *?[a-zA-Z] *?)", $shuffled );
+        $data["total_character_vowel"]=preg_match_all("/[aeiou]/i",$shuffled,$matches);
+        $data["total_number"]= preg_match_all( "/[0-9]/", $shuffled );
+        foreach (str_split($getint) as $number ) {
             $number % 2 == 0 ? $even++ :0;
         }
         $data["total_number_even"]=$even;
+        $data+=$this->getOrderChar($shuffled);
        return response()->json( $data, Response::HTTP_OK);
 
+      }
+
+      function getOrderChar($string) {
+       
+        foreach (str_split(strtolower($string)) as $key => $value) {
+            if (is_numeric($value)) {
+                $dataNumeric[]=$value;
+            }else{
+                $datachar[]=$value;
+            }
+
+        }
+        $dataarraynumeric=array_unique( $dataNumeric);
+        $dataarraychar=array_unique( $datachar);
+        rsort($dataarraynumeric);
+        sort($dataarraychar);
+        $data["orderstring"]=implode(', ',array_merge($dataarraynumeric,$dataarraychar));
+        $data["concatString"]=$this->getconcatstring($dataarraynumeric,$dataarraychar);
+        return $data;
+
+      }
+
+      function getconcatstring($numeric,$string) {
+        $data="";
+        for ($i=0; $i <count($numeric) ; $i++) { 
+            $data .=$numeric[$i].$string[$i].",";
+        }
+
+        return $data;
       }
     
     
